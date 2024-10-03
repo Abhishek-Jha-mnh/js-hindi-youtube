@@ -1,29 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>htnml Events </title>
-</head>
-<body style="background-color: #414141; color: aliceblue;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>htnml Events</title>
+  </head>
+  <body id="body" style="background-color: #414141; color: aliceblue">
     <h2>Amazing image</h2>
-    <div >
-        <ul id="images">
-            <li><img width="200px" id="photoshop" src="https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="photoshop"></li>
-            <li><img width="200px" id="japan" src="https://images.pexels.com/photos/3532553/pexels-photo-3532553.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
-            <li><img width="200px" id="river" src="https://images.pexels.com/photos/3532551/pexels-photo-3532551.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
-            <li><img width="200px" id="owl" src="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="" ></li>
-            <li><img width="200px" id="prayer" src="https://images.pexels.com/photos/2522671/pexels-photo-2522671.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
-            <li><a style="color: aliceblue;" href="https://google.com" id="google">Google</a></li>
-        </ul>
-   </div>
-</body>
-<script>
+    <div>
+      <ul id="images">
+        <li>
+          <img
+            width="200px"
+            id="photoshop"
+            src="https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+            alt="photoshop"
+          />
+        </li>
+        <li>
+          <img
+            width="200px"
+            id="japan"
+            src="https://images.pexels.com/photos/3532553/pexels-photo-3532553.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+            alt=""
+          />
+        </li>
+        <li>
+          <img
+            width="200px"
+            id="river"
+            src="https://images.pexels.com/photos/3532551/pexels-photo-3532551.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+            alt=""
+          />
+        </li>
+        <li>
+          <img
+            width="200px"
+            id="owl"
+            src="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+            alt=""
+          />
+        </li>
+        <li>
+          <img
+            width="200px"
+            id="prayer"
+            src="https://images.pexels.com/photos/2522671/pexels-photo-2522671.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+            alt=""
+          />
+        </li>
+        <li>
+          <a style="color: aliceblue" href="https://google.com" id="google"
+            >Google</a
+          >
+        </li>
+      </ul>
+    </div>
+  </body>
+  <script>
+    const circles = [];
+    // document.getElementById("body").onclick = ()=>{
+    //    alert("body clicked")
+    // }
+    document.getElementById("body").addEventListener(
+      "click",
+      (e) => {
+        e.preventDefault();
+        console.log("event == " + JSON.stringify(e));
+        const x = e.clientX;
+        const y = e.clientY;
+        const circle = document.createElement("div");
+        circle.style.width = "100px";
+        circle.style.height = "100px";
+        circle.style.backgroundColor = "transparent";
+        circle.style.border = "solid 2px black";
+        circle.style.borderRadius = "50%";
+        circle.style.position = "absolute";
+        //circle.style.top = y + "px"; // Position the circle at the Y coordinate
+        //circle.style.left = x + "px"; // Position the circle at the X coordinate
+        // Subtract half the width and height to center the circle at the click
+        circle.style.top = y + 50 + "px"; // Subtract half of 100px height
+        circle.style.left = x - 50 + "px"; // Subtract half of 100px width
+
+        document.body.appendChild(circle);
+        console.log("Mouse clicked at position: (" + x + ", " + y + ")");
+        const newCircle = { x: x, y: y, element: circle };
+        circles.push(newCircle);
+        // Check for collisions with other circles
+        checkForCollisions(newCircle);
+      },
+      false
+    );
+
+    const checkForCollisions = (newCircle) => {
+      const radius = 50;
+      for (let i = 0; i < circles.length; i++) {
+        const existingCircle = circles[i];
+        // Skip checking collision with itself
+        if (existingCircle === newCircle) continue;
+        const dx = newCircle.x - existingCircle.x;
+        const dy = newCircle.y - existingCircle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < radius * 2) {
+          // Remove both circles from the DOM
+          setTimeout(() => {
+            existingCircle.element.remove();
+            newCircle.element.remove();
+          }, 1000);
+
+          // Remove both circles from the array
+          circles.splice(circles.indexOf(existingCircle), 1);
+          circles.splice(circles.indexOf(newCircle), 1);
+
+          console.log("Circles collided and were removed");
+          //break; // Exit loop after handling collision
+        }
+      }
+    };
+
     // document.getElementById('owl').onclick = function(){
     //     alert("owl clicked")
     // }
 
-     // attachEvent()
+    // attachEvent()
     // jQuery - on
 
     // type, timestamp, defaultPrevented
@@ -39,25 +138,26 @@
     //     console.log("owl clicked");
     //     e.stopPropagation()
     // }, false)
-    
+
     // document.getElementById('google').addEventListener('click',function(e){
     //     e.preventDefault();
     //     e.stopPropagation()
     //     console.log("google clicked");
     // }, false)
-   
-    
-    document.querySelector('#images').addEventListener('click', function(e){
-        console.log(e.target.tagName);
-        if (e.target.tagName === 'IMG') {
-            console.log(e.target.id);
-            let removeIt = e.target.parentNode
-            removeIt.remove()
-        }
-    
-        
-    })
-    
+
+    //<!-- document.querySelector('#images').addEventListener('click', function(e){
+    // console.log(e.target.tagName);
+    // if (e.target.tagName === 'IMG') {
+    //console.log(e.target.id);
+    // let removeIt = e.target.parentNode
+    //removeIt.remove()
+    //  }
+
+    //})
+    //
+    //
+    //
+
     //removeIt.parentNode.removeChild(removeIt)
-</script>
+  </script>
 </html>
